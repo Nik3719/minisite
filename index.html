@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Генератор паролей</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Генератор паролей</h1>
+    <div class="form-group">
+      <label for="length">Длина пароля: <span id="lengthValue">12</span></label>
+      <input type="range" id="length" min="4" max="32" value="12">
+    </div>
+    <div class="form-group checkbox-group">
+      <label><input type="checkbox" id="upper" checked> Верхний регистр</label>
+      <label><input type="checkbox" id="lower" checked> Нижний регистр</label>
+      <label><input type="checkbox" id="numbers" checked> Цифры</label>
+      <label><input type="checkbox" id="symbols"> Символы</label>
+    </div>
+    <button id="generate">Сгенерировать</button>
+    <input type="text" id="password" readonly placeholder="Ваш пароль появится здесь">
+  </div>
+
+  <!-- Скрипт генерации пока пуст, добавлю Python на сервере -->
+  <script>
+    const lengthInput = document.getElementById('length');
+    const lengthValue = document.getElementById('lengthValue');
+    const generateBtn = document.getElementById('generate');
+    const passwordField = document.getElementById('password');
+
+    lengthInput.addEventListener('input', () => {
+      lengthValue.textContent = lengthInput.value;
+    });
+
+    generateBtn.addEventListener('click', () => {
+      passwordField.value = 'Ожидайте...';
+      fetch('/generate?length=' + lengthInput.value +
+            '&upper=' + document.getElementById('upper').checked +
+            '&lower=' + document.getElementById('lower').checked +
+            '&numbers=' + document.getElementById('numbers').checked +
+            '&symbols=' + document.getElementById('symbols').checked)
+        .then(res => res.text())
+        .then(pwd => {
+          passwordField.value = pwd;
+        })
+        .catch(() => {
+          passwordField.value = 'Ошибка генерации';
+        });
+    });
+  </script>
+</body>
+</html>
